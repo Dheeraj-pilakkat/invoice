@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { prisma } from "@/lib/prisma";
+import { Expense } from "@prisma/client";
 import { format } from "date-fns";
 import { auth } from "@/auth";
 
@@ -44,7 +45,7 @@ export default async function ExpensesPage() {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                expenses.map((expense) => (
+                                expenses.map((expense: Expense) => (
                                     <TableRow key={expense.id}>
                                         <TableCell className="font-medium">{expense.merchant}</TableCell>
                                         <TableCell>
