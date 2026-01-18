@@ -67,6 +67,11 @@ export function CreateInvoiceForm() {
         setStep(step - 1);
     }
 
+    const calculateTotal = () => {
+        const items = form.watch("items");
+        return items.reduce((acc, item) => acc + (item.quantity * item.price), 0);
+    }
+
     const onSubmit = async (data: InvoiceFormValues) => {
         setIsPending(true);
         try {
@@ -74,15 +79,24 @@ export function CreateInvoiceForm() {
             toast.success("Invoice created successfully");
             router.push("/invoices");
         } catch (error) {
+            console.error(error);
             toast.error("Failed to create invoice");
         } finally {
             setIsPending(false);
         }
     }
 
-    const calculateTotal = () => {
-        const items = form.watch("items");
-        return items.reduce((acc, item) => acc + (item.quantity * item.price), 0);
+    const onInvalid = (errors: any) => {
+        const errorFields = Object.keys(errors);
+        if (errorFields.some(field => ['clientName', 'clientEmail', 'dueDate'].includes(field))) {
+            setStep(1);
+            toast.error("Please check Client Info errors");
+        } else if (errorFields.includes('items')) {
+            setStep(2);
+            toast.error("Please check Items errors");
+        } else {
+            toast.error("Please check the form for errors");
+        }
     }
 
     return (
@@ -106,7 +120,7 @@ export function CreateInvoiceForm() {
             </div>
 
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
                     {/* Step 1: Client Info */}
                     {step === 1 && (
                         <div className="space-y-4">
