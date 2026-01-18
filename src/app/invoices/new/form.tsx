@@ -31,7 +31,7 @@ export function CreateInvoiceForm() {
     const [step, setStep] = useState(1);
     const [isPending, setIsPending] = useState(false);
 
-    const form = useForm<InvoiceFormValues>({
+    const form = useForm({
         resolver: zodResolver(invoiceFormSchema),
         defaultValues: {
             clientName: "",
